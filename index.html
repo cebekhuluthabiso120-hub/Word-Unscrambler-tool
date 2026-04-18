@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word Unscrambler | Find Words From Letters</title>
+  <meta name="description" content="Enter letters to find all real English words that can be made from them. Free, fast, and mobile-friendly word unscrambler." />
+  <style>
+    :root{
+      --bg1:#0f172a;
+      --bg2:#1e293b;
+      --card:rgba(255,255,255,.94);
+      --text:#0f172a;
+      --muted:#64748b;
+      --primary:#4f46e5;
+      --primary-hover:#4338ca;
+      --border:#e2e8f0;
+      --chip:#eef2ff;
+      --chip-text:#3730a3;
+      --shadow:0 20px 50px rgba(2,6,23,.18);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, #60a5fa 0%, transparent 30%),
+        radial-gradient(circle at bottom right, #a78bfa 0%, transparent 28%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+    }
+    a{color:inherit}
+    .wrap{width:min(1000px,92%);margin:28px auto}
+    .card{
+      background:var(--card);
+      backdrop-filter: blur(8px);
+      border:1px solid rgba(255,255,255,.45);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      padding:18px 24px;
+      border-bottom:1px solid rgba(100,116,139,.14);
+      flex-wrap:wrap;
+    }
+    .brand{
+      font-weight:800;
+      text-decoration:none;
+      letter-spacing:.2px;
+    }
+    nav{
+      display:flex;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    nav a{
+      text-decoration:none;
+      color:var(--muted);
+      font-weight:600;
+      font-size:.95rem;
+    }
+    nav a:hover{color:var(--primary)}
+    .hero{
+      padding:34px 24px 18px;
+      text-align:center;
+    }
+    .pill{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      background:#ecfeff;
+      color:#155e75;
+      font-weight:700;
+      font-size:.82rem;
+    }
+    h1{
+      margin:14px 0 10px;
+      font-size:clamp(2rem,4vw,3.2rem);
+      line-height:1.05;
+    }
+    .sub{
+      margin:0 auto;
+      color:var(--muted);
+      max-width:700px;
+      font-size:1rem;
+    }
+    .app{
+      padding:24px;
+      border-top:1px solid rgba(100,116,139,.12);
+    }
+    .controls{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:12px;
+    }
+    input, select{
+      width:100%;
+      padding:15px 16px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      font-size:1rem;
+      outline:none;
+      background:#fff;
+    }
+    input:focus, select:focus{
+      border-color:#818cf8;
+      box-shadow:0 0 0 4px rgba(99,102,241,.12);
+    }
+    button{
+      border:none;
+      border-radius:14px;
+      padding:0 22px;
+      min-height:54px;
+      font-size:1rem;
+      font-weight:700;
+      background:var(--primary);
+      color:#fff;
+      cursor:pointer;
+    }
+    button:hover{background:var(--primary-hover)}
+    button:disabled{opacity:.7;cursor:not-allowed}
+    .toolbar{
+      margin-top:14px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px 20px;
+      align-items:center;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+    .toolbar label{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .meta{
+      margin-top:18px;
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+    .results{
+      margin-top:18px;
+      min-height:90px;
+      background:rgba(248,250,252,.9);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:16px;
+    }
+    .list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .word{
+      display:inline-flex;
+      padding:8px 12px;
+      background:var(--chip);
+      color:var(--chip-text);
+      border-radius:999px;
+      font-weight:700;
+      font-size:.95rem;
+      border:1px solid rgba(99,102,241,.12);
+    }
+    .empty{
+      color:var(--muted);
+      text-align:center;
+      padding:18px 8px;
+    }
+    .content{
+      padding:0 24px 28px;
+      line-height:1.7;
+    }
+    .content h2{
+      margin-top:28px;
+      margin-bottom:10px;
+      font-size:1.4rem;
+    }
+    .content p, .content li{color:#334155}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:16px;
+      margin-top:16px;
+    }
+    .mini{
+      background:#f8fafc;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:18px;
+    }
+    .mini h3{margin-top:0}
+    .footer{
+      padding:20px 24px 28px;
+      color:var(--muted);
+      font-size:.92rem;
+      text-align:center;
+      border-top:1px solid rgba(100,116,139,.12);
+    }
+    @media (max-width: 760px){
+      .controls{grid-template-columns:1fr}
+      button{width:100%}
+      .grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="topbar">
+        <a class="brand" href="index.html">Word Unscrambler</a>
+        <nav>
+          <a href="index.html">Home</a>
+          <a href="blog.html">Blog</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+          <a href="privacy.html">Privacy</a>
+        </nav>
+      </div>
+
+      <div class="hero">
+        <div class="pill">Free • Fast • Mobile Friendly</div>
+        <h1>Unscramble Letters Into Real Words</h1>
+        <p class="sub">
+          Type or paste a group of letters and instantly see all English words that can be made from them.
+        </p>
+      </div>
+
+      <div class="app">
+        <div class="controls">
+          <input id="letters" type="text" placeholder="Enter letters, e.g. listen" autocomplete="off" spellcheck="false" />
+          <button id="generateBtn">Generate Words</button>
+        </div>
+
+        <div class="toolbar">
+          <label><input type="checkbox" id="sortLength" checked /> Sort by longest first</label>
+          <label>Minimum length:
+            <select id="minLength">
+              <option value="2">2</option>
+              <option value="3" selected>3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="meta">
+          <div id="status">Loading dictionary...</div>
+          <div id="count"></div>
+        </div>
+
+        <div class="results">
+          <div id="results" class="empty">Your results will appear here.</div>
+        </div>
+      </div>
+
+      <div class="content">
+        <h2>How this word unscrambler works</h2>
+        <p>
+          This tool checks a large English dictionary and finds all valid words that can be formed from the letters you enter.
+          It is useful for word games, classroom activities, spelling practice, and puzzle solving.
+        </p>
+
+        <div class="grid">
+          <div class="mini">
+            <h3>For Scrabble</h3>
+            <p>Find possible playable words from your tiles and explore longer combinations.</p>
+          </div>
+          <div class="mini">
+            <h3>For Word Games</h3>
+            <p>Great for anagrams, classroom exercises, and vocabulary building.</p>
+          </div>
+          <div class="mini">
+            <h3>On Any Device</h3>
+            <p>Designed to work smoothly on phones, tablets, laptops, and desktop computers.</p>
+          </div>
+        </div>
+
+        <h2>Frequently asked questions</h2>
+        <p><strong>Is this free?</strong><br>Yes, the tool is completely free to use.</p>
+        <p><strong>Does it work on mobile?</strong><br>Yes. The layout is responsive and mobile friendly.</p>
+        <p><strong>What kind of words does it show?</strong><br>It shows English words that can be formed from your letters, based on a large word list loaded in the browser.</p>
+      </div>
+
+      <div class="footer">
+        © 2026 Word Unscrambler. All rights reserved.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let dictionary = [];
+    let dictionaryReady = false;
+
+    const lettersInput = document.getElementById('letters');
+    const generateBtn = document.getElementById('generateBtn');
+    const statusEl = document.getElementById('status');
+    const countEl = document.getElementById('count');
+    const resultsEl = document.getElementById('results');
+    const sortLengthEl = document.getElementById('sortLength');
+    const minLengthEl = document.getElementById('minLength');
+
+    async function loadDictionary() {
+      try {
+        const res = await fetch('https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt');
+        const text = await res.text();
+
+        dictionary = text
+          .split('\n')
+          .map(w => w.trim().toLowerCase())
+          .filter(w => /^[a-z]+$/.test(w));
+
+        dictionaryReady = true;
+        statusEl.textContent = `Dictionary loaded: ${dictionary.length.toLocaleString()} words`;
+        generateBtn.disabled = false;
+      } catch (err) {
+        statusEl.textContent = 'Could not load dictionary. Please try again later.';
+        generateBtn.disabled = true;
+      }
+    }
+
+    function getLetterCount(str) {
+      const count = Object.create(null);
+      for (const ch of str) count[ch] = (count[ch] || 0) + 1;
+      return count;
+    }
+
+    function canFormWord(word, lettersCount) {
+      const used = Object.create(null);
+      for (const ch of word) {
+        used[ch] = (used[ch] || 0) + 1;
+        if (used[ch] > (lettersCount[ch] || 0)) return false;
+      }
+      return true;
+    }
+
+    function renderWords(words) {
+      if (!words.length) {
+        resultsEl.className = 'empty';
+        resultsEl.textContent = 'No words found.';
+        return;
+      }
+      resultsEl.className = 'list';
+      resultsEl.innerHTML = words.map(word => `<span class="word">${word}</span>`).join('');
+    }
+
+    function unscramble() {
+      if (!dictionaryReady) return;
+
+      const input = lettersInput.value.toLowerCase().replace(/[^a-z]/g, '');
+      const minLength = Number(minLengthEl.value);
+
+      countEl.textContent = '';
+      if (!input) {
+        resultsEl.className = 'empty';
+        resultsEl.textContent = 'Please enter some letters.';
+        return;
+      }
+
+      statusEl.textContent = 'Searching...';
+
+      const lettersCount = getLetterCount(input);
+      let matches = dictionary.filter(word =>
+        word.length >= minLength &&
+        word.length <= input.length &&
+        canFormWord(word, lettersCount)
+      );
+
+      matches = [...new Set(matches)];
+
+      if (sortLengthEl.checked) {
+        matches.sort((a, b) => b.length - a.length || a.localeCompare(b));
+      } else {
+        matches.sort((a, b) => a.localeCompare(b));
+      }
+
+      renderWords(matches);
+      countEl.textContent = `${matches.length.toLocaleString()} word(s) found`;
+      statusEl.textContent = 'Done';
+    }
+
+    generateBtn.disabled = true;
+    generateBtn.addEventListener('click', unscramble);
+    lettersInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') unscramble();
+    });
+
+    loadDictionary();
+  </script>
+</body>
+</html>
